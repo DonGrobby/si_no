@@ -50,8 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: switch (bloc.state) {
         (Inicial i) => WInicial(i.puntuacion),
-        (Cargando _) => WCargando(),
-        (EstadoFallido _) => WEstadoFallido(),
+        (Cargando _) => const WCargando(),
+        (EstadoFallido _) => const WEstadoFallido(),
         (EstadoRespuesta r) => BlocBuilder<SipiBloc, SipiState>(
             buildWhen: (previous, current) {
               SnackBar snackBar = SnackBar(
