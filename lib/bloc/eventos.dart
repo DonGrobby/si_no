@@ -16,4 +16,12 @@ class Respondio extends Eventos {
   Respondio(this.modelo);
 }
 
-class PuntuacionMaximaCargado extends Eventos{}
+class PuntuacionMaximaCargado extends Eventos {}
+
+class RecordSuperado extends Eventos {
+  final Modelo modelo;
+
+  RecordSuperado(this.modelo);
+}
+
+class PuntuacionMaximaBorrado extends Eventos {}

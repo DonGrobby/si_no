@@ -1,18 +1,18 @@
 import 'package:api_si_no/modelo.dart';
 
-sealed class Estados {}
+sealed class SipiState {}
 
-class Inicial extends Estados {
+class Inicial extends SipiState {
   final int puntuacion;
 
   Inicial(this.puntuacion);
 }
 
-class Cargando extends Estados {}
+class Cargando extends SipiState {}
 
-class EstadoFallido extends Estados {}
+class EstadoFallido extends SipiState {}
 
-class EstadoRespuesta extends Estados {
+class EstadoRespuesta extends SipiState {
   final Modelo modelo;
 
   EstadoRespuesta(this.modelo);

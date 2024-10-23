@@ -15,7 +15,7 @@ TipoRespuesta cadenaARespuesta(String cadena) {
   return TipoRespuesta.no;
 }
 
-class SipiBloc extends Bloc<Eventos, Estados> {
+class SipiBloc extends Bloc<Eventos, SipiState> {
   TipoRespuesta ultimaRespuesta = TipoRespuesta.no;
   int _puntuacion = 0;
   int _puntuacionMaxima = 0;
@@ -24,8 +24,9 @@ class SipiBloc extends Bloc<Eventos, Estados> {
   late SharedPreferencesAsync shared;
   SipiBloc() : super(Inicial(0)) {
     on<PuntuacionMaximaCargado>((event, emit) async {
-      shared = await SharedPreferencesAsync();
+      shared = SharedPreferencesAsync();
       _puntuacionMaxima = await shared.getInt(sharedPuntuacionMaxima) ?? 0;
+      emit(Inicial(0));
     });
     on<Contestado>((event, emit) async {
       emit(Cargando());
@@ -49,12 +50,27 @@ class SipiBloc extends Bloc<Eventos, Estados> {
     on<Regreso>((event, emit) {
       emit(Inicial(_puntuacion));
     });
-    on<Respondio>((event, emit) {
+    on<RecordSuperado>((event, emit) async {
+      recordSuperado = true;
+      _puntuacionMaxima = recordSuperado ? _puntuacion : _puntuacionMaxima;
+      await shared.setInt(sharedPuntuacionMaxima, _puntuacionMaxima);
+      emit(EstadoRespuesta(event.modelo));
+    });
+    on<Respondio>((event, emit) async {
       var queRespondio = cadenaARespuesta(event.modelo.answer);
       if (queRespondio == ultimaRespuesta) _puntuacion++;
-      recordSuperado = _puntuacion > _puntuacionMaxima;
-      _puntuacionMaxima = recordSuperado ? _puntuacion : _puntuacionMaxima;
+      if (_puntuacion > _puntuacionMaxima) {
+        add(RecordSuperado(event.modelo));
+        return;
+      }
+      recordSuperado = false;
       emit(EstadoRespuesta(event.modelo));
+    });
+
+    on<PuntuacionMaximaBorrado>((event, emit) async {
+      shared.setInt(sharedPuntuacionMaxima, 0);
+      _puntuacionMaxima = 0;
+      emit(Inicial(0));
     });
   }
 }
