@@ -24,4 +24,12 @@ class RecordSuperado extends Eventos {
   RecordSuperado(this.modelo);
 }
 
-class PuntuacionMaximaBorrado extends Eventos {}
+class PuntuacionMaximaBorrado extends Eventos {
+  final Modelo modelo;
+
+  PuntuacionMaximaBorrado(this.modelo);
+}
+
+class BorradoFloating extends Eventos{
+  
+}

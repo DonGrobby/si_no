@@ -49,7 +49,20 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: switch (bloc.state) {
-        (Inicial i) => WInicial(i.puntuacion),
+        (Inicial i) => BlocBuilder<SipiBloc, SipiState>(
+            buildWhen: (previous, current) {
+              SnackBar konamiCode = const SnackBar(
+                content: Text("Código super secreto super desecretado."),
+              );
+              if (bloc.codeIndex == bloc.konamiCode.length) {
+                ScaffoldMessenger.of(context).showSnackBar(konamiCode);
+              }
+              return true;
+            },
+            builder: (context, state) {
+              return WInicial(i.puntuacion);
+            },
+          ),
         (Cargando _) => const WCargando(),
         (EstadoFallido _) => const WEstadoFallido(),
         (EstadoRespuesta r) => BlocBuilder<SipiBloc, SipiState>(
@@ -70,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<SipiBloc>().add(PuntuacionMaximaBorrado());
+          context.read<SipiBloc>().add(BorradoFloating());
         },
         child: const Icon(Icons.refresh),
       ),

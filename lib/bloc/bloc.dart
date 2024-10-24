@@ -64,12 +64,15 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
       emit(EstadoRespuesta(event.modelo));
     });
     on<Respondio>((event, emit) async {
-      print(codeIndex);
-      print("${konamiCode[codeIndex]} $ultimaRespuesta");
       var queRespondio = cadenaARespuesta(event.modelo.answer);
       if (queRespondio == ultimaRespuesta) _puntuacion++;
-      if (konamiCode[codeIndex] == ultimaRespuesta) codeIndex++;
-      if (codeIndex == konamiCode.length) add(PuntuacionMaximaBorrado());
+      if (konamiCode[codeIndex] == ultimaRespuesta) {
+        codeIndex++;
+      } else {
+        codeIndex = 0;
+      }
+      if (codeIndex == konamiCode.length)
+        add(PuntuacionMaximaBorrado(event.modelo));
       if (_puntuacion > _puntuacionMaxima) {
         add(RecordSuperado(event.modelo));
         return;
@@ -79,6 +82,13 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
     });
 
     on<PuntuacionMaximaBorrado>((event, emit) async {
+      shared.setInt(sharedPuntuacionMaxima, 0);
+      _puntuacionMaxima = _puntuacion;
+      codeIndex = 0;
+      emit(EstadoRespuesta(event.modelo));
+    });
+
+    on<BorradoFloating>((event, emit) async {
       shared.setInt(sharedPuntuacionMaxima, 0);
       _puntuacionMaxima = 0;
       codeIndex = 0;
