@@ -71,8 +71,9 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
       } else {
         codeIndex = 0;
       }
-      if (codeIndex == konamiCode.length)
+      if (codeIndex == konamiCode.length) {
         add(PuntuacionMaximaBorrado(event.modelo));
+      }
       if (_puntuacion > _puntuacionMaxima) {
         add(RecordSuperado(event.modelo));
         return;

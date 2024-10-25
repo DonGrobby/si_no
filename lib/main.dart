@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SnackBar konamiCode = const SnackBar(
                 content: Text("Código super secreto super desecretado."),
               );
-              if (bloc.codeIndex == bloc.konamiCode.length) {
+              if (bloc.codeIndex == bloc.konamiCode.length - 1) {
                 ScaffoldMessenger.of(context).showSnackBar(konamiCode);
               }
               return true;
