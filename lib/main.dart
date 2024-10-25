@@ -81,12 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
       },
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<SipiBloc>().add(BorradoFloating());
-        },
-        child: const Icon(Icons.refresh),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     context.read<SipiBloc>().add(BorradoFloating());
+      //   },
+      //   child: const Icon(Icons.refresh),
+      // ),
     );
   }
 }
