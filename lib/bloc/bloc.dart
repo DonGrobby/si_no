@@ -83,14 +83,14 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
     });
 
     on<PuntuacionMaximaBorrado>((event, emit) async {
-      shared.setInt(sharedPuntuacionMaxima, 0);
+      shared.setInt(sharedPuntuacionMaxima, _puntuacion);
       _puntuacionMaxima = _puntuacion;
       codeIndex = 0;
       emit(EstadoRespuesta(event.modelo));
     });
 
     on<BorradoFloating>((event, emit) async {
-      shared.setInt(sharedPuntuacionMaxima, 0);
+      shared.setInt(sharedPuntuacionMaxima, _puntuacion);
       _puntuacionMaxima = 0;
       codeIndex = 0;
       emit(Inicial(0));
