@@ -40,10 +40,11 @@ class ResultadoWidget extends StatelessWidget {
         Image.network(
           modelo.image,
           loadingBuilder: (context, child, loadingProgress) {
-            return const CircularProgressIndicator();
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(Icons.error);
+            if (loadingProgress == null) {
+              return child;
+            } else {
+              return const CircularProgressIndicator();
+            }
           },
         ),
         Text(
