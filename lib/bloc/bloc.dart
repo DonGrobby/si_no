@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:api_si_no/bloc/estados.dart';
 import 'package:api_si_no/bloc/eventos.dart';
+import 'package:api_si_no/bloc/modelos_sipibloc.dart';
 import 'package:api_si_no/constantes.dart';
 import 'package:api_si_no/modelo.dart';
 import 'package:bloc/bloc.dart';
@@ -18,18 +19,19 @@ TipoRespuesta cadenaARespuesta(String cadena) {
 class SipiBloc extends Bloc<Eventos, SipiState> {
   TipoRespuesta ultimaRespuesta = TipoRespuesta.no;
   int _puntuacion = 0;
+
+  //Calificar aplicación.
+  ReviewApp review = ReviewApp();
+
+  // Guardar localmente puntuación máxima.
   int _puntuacionMaxima = 0;
   int get puntuacionMaxima => _puntuacionMaxima;
   bool recordSuperado = false;
   late SharedPreferencesAsync shared;
-  int codeIndex = 0;
-  Map<int, TipoRespuesta> konamiCode = {
-    0: TipoRespuesta.no,
-    1: TipoRespuesta.no,
-    2: TipoRespuesta.si,
-    3: TipoRespuesta.si,
-    4: TipoRespuesta.no,
-  };
+
+  //Codigos
+  Codigos codigos = Codigos();
+
   SipiBloc() : super(Inicial(0)) {
     on<PuntuacionMaximaCargado>((event, emit) async {
       shared = SharedPreferencesAsync();
@@ -66,12 +68,12 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
     on<Respondio>((event, emit) async {
       var queRespondio = cadenaARespuesta(event.modelo.answer);
       if (queRespondio == ultimaRespuesta) _puntuacion++;
-      if (konamiCode[codeIndex] == ultimaRespuesta) {
-        codeIndex++;
+      if (codigos.konamiCode[codigos.codeIndex] == ultimaRespuesta) {
+        codigos.codeIndex++;
       } else {
-        codeIndex = 0;
+        codigos.codeIndex = 0;
       }
-      if (codeIndex == konamiCode.length) {
+      if (codigos.codeIndex == codigos.konamiCode.length) {
         add(PuntuacionMaximaBorrado(event.modelo));
       }
       if (_puntuacion > _puntuacionMaxima) {
@@ -85,14 +87,14 @@ class SipiBloc extends Bloc<Eventos, SipiState> {
     on<PuntuacionMaximaBorrado>((event, emit) async {
       shared.setInt(sharedPuntuacionMaxima, _puntuacion);
       _puntuacionMaxima = _puntuacion;
-      codeIndex = 0;
+      codigos.codeIndex = 0;
       emit(EstadoRespuesta(event.modelo));
     });
 
     on<BorradoFloating>((event, emit) async {
       shared.setInt(sharedPuntuacionMaxima, _puntuacion);
       _puntuacionMaxima = 0;
-      codeIndex = 0;
+      codigos.codeIndex = 0;
       emit(Inicial(0));
     });
   }
